@@ -19,11 +19,10 @@ from src.steps.data.dataset_preparators import (
 )
 # from src.steps.training.model_appraisers import model_appraiser
 # from src.steps.training.model_evaluators import model_evaluator # Créer model_evaluator.py et coder fonction
-from src.steps.training.model_trainers import (
-    get_pre_trained_weights_path,
-    model_trainer,
-    download_pre_trained_model
-)
+# from src.steps.training.model_trainers import (
+#     model_trainer,
+#     download_pre_trained_model
+# )
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)

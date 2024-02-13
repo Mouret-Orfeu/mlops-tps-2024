@@ -17,8 +17,7 @@ from src.models.model_dataset import Dataset
 
 @step(output_materializers=DatasetMaterializer)
 def dataset_creator(data_source_list: DataSourceList, seed: int, bucket_name: str, distribution_weights: list[float])-> Dataset:
-    
-    
+
     data_source = data_source_list.data_sources[0]
 
     # Assurez-vous d'avoir toutes les informations nécessaires pour instancier l'objet
@@ -54,5 +53,4 @@ def dataset_extractor(dataset: Dataset, minio_client: MinioClient, bucket_name: 
 
 @step
 def dataset_to_yolo_converter(dataset : Dataset, dataset_path: str):
-    # dataset.to_yolo_format(EXTRACTED_DATASETS_PATH)
     dataset.to_yolo_format(dataset_path)
