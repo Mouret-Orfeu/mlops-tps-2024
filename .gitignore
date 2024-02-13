@@ -167,7 +167,6 @@ cython_debug/
 local-experiment-pipeline/
 .ruff_cache/
 datasets
-datasets_old
 datasets.7z
 src/experiment.py
 

@@ -41,25 +41,18 @@ def dataset_creator(data_source_list: DataSourceList, seed: int, bucket_name: st
     return dataset
 
 @step
-def datasource_extractor(data_source_list: DataSourceList, minio_client: MinioClient, bucket_name: str):
-    # data_source_list.data_sources[0] est le seul dataset qu'on a sur le datalake
-    data_source = data_source_list.data_sources[0]
-    # On télécharge le dataset dans le dossier destination_folder
-    print(data_source.name)
-    minio_client.check_connection()
-    minio_client.download_folder(bucket_name, data_source.name, EXTRACTED_DATASETS_PATH)
+def dataset_extractor(dataset: Dataset, minio_client: MinioClient, bucket_name: str):
 
-    # # Pour regarder ce qu'il y a dans data_source_list
-    # for data_source in data_source_list.data_sources:
-    #     print(data_source)
+    # No need to pass down the parent folder, it should be directly the dataset folder?
+    # Double-check and fix this if necessary
+    dataset.download(minio_client, EXTRACTED_DATASETS_PATH)
 
     # # Faut que destination_path soit ./destination_folder
     # destination_path = os.path.join(os.path.basename("./"), destination_folder)
 
-@step
-def explore_dataset():
-    pass
+    return os.path.join(EXTRACTED_DATASETS_PATH, dataset.uuid)
 
 @step
 def dataset_to_yolo_converter(dataset : Dataset, dataset_path: str):
-    return dataset.to_yolo_format(dataset, dataset_path)
+    # dataset.to_yolo_format(EXTRACTED_DATASETS_PATH)
+    dataset.to_yolo_format(dataset_path)

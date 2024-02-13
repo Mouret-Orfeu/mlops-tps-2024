@@ -187,7 +187,6 @@ class MinioClient(BucketClient):
     def download_folder(
         self, bucket_name: str, folder_name: str, destination_path: str
     ) -> None:
-        os.makedirs("/home/maximedrouhin/TPS/3A/MLOps/mlops-tps-2024/datasets", exist_ok=True)
         os.makedirs(destination_path, exist_ok=True)
 
         try:
