@@ -14,15 +14,16 @@ from src.steps.data.datalake_initializers import (
 )
 from src.steps.data.dataset_preparators import (
     dataset_creator,
-    dataset_extractor,
+    datasource_extractor,
     dataset_to_yolo_converter,
 )
-# from src.steps.training.model_appraisers import model_appraiser
-# from src.steps.training.model_evaluators import model_evaluator # Créer model_evaluator.py et coder fonction
-# from src.steps.training.model_trainers import (
-#     model_trainer,
-#     download_pre_trained_model
-# )
+from src.steps.training.model_appraisers import model_appraiser 
+from src.steps.training.model_evaluators import model_evaluator # Créer model_evaluator.py et coder fonction
+from src.steps.training.model_trainers import (
+    get_pre_trained_weights_path,
+    model_trainer,
+    download_pre_trained_model
+)
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)
@@ -42,14 +43,51 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     distribution_weights = [0.6, 0.2, 0.2]
 
+    # Extract the data sources to a folder
+    dataset: Dataset = dataset_creator(data_source_list, 1234, bucket_name, distribution_weights)
+
+    # model_url = settings.YOLO_PRE_TRAINED_WEIGHTS_URL
+    # model_folder = settings.YOLO_PRE_TRAINED_WEIGHTS_PATH
+    # model_name = settings.YOLO_PRE_TRAINED_WEIGHTS_NAME
+
+    # # Dowload pre_trained model
+    # download_pre_trained_model(model_url, model_folder, model_name)
+
+    # Utilisez la méthode download pour télécharger les données de votre bucket
+    # destination_root_path = "./downloaded_dataset"  # Remplacez par le chemin souhaité
+    # minio_client.download_folder(bucket_name, data_source.name, EXTRACTED_DATASETS_PATH
+    dataset.download(minio_client, EXTRACTED_DATASETS_PATH)
+
+    # Vous pouvez ajouter des étapes supplémentaires ici si nécessaire
+    # Par exemple, convertir les données au format YOLO si nécessaire
+    dataset.to_yolo_format(EXTRACTED_DATASETS_PATH)
+
+    # Extract the data sources to a folder
+    datasource_extractor(data_source_list, minio_client, bucket_name)
+
+    # model_url = settings.YOLO_PRE_TRAINED_WEIGHTS_URL
+    # model_folder = settings.YOLO_PRE_TRAINED_WEIGHTS_PATH
+    # model_name = settings.YOLO_PRE_TRAINED_WEIGHTS_NAME
+
+    # # Dowload pre_trained model
+    # download_pre_trained_model(model_url, model_folder, model_name)
+
+    # explore_dataset()
+
     # Prepare/create the dataset
-    dataset = dataset_creator(data_source_list, 1234, bucket_name, distribution_weights)
+    # dataset = dataset_creator(
+    #     ...
+    # )
 
     # Extract the dataset to a folder
-    extraction_path = dataset_extractor(dataset, minio_client, bucket_name)
+    # extraction_path = dataset_extractor(
+    #     ...
+    # )
 
     # If necessary, convert the dataset to a YOLO format
-    dataset_to_yolo_converter(dataset, extraction_path)
+    # dataset_to_yolo_converter(
+    #     ...
+    # )
 
     # Train the model
     # trained_model_path = model_trainer(
@@ -58,5 +96,10 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     # Evaluate the model
     # test_metrics_result = model_evaluator(
+    #     ...
+    # )
+
+    # Validation test for deployment readiness
+    # test_metrics_result = model_appraiser(
     #     ...
     # )
