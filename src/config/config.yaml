@@ -3,6 +3,10 @@ project:
 
 model:
   key: value
+  img_size: 640
+  batch_size: 16
+  nb_epochs: 10
+  device: "cpu"
 
 evaluation:
   key: value

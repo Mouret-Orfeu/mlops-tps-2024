@@ -110,6 +110,43 @@ class Dataset:
 
         Args:
             dataset_path (str): The path where dataset has been downloaded.
+
+
+        Before:
+        datasets/plastic_in_river
+        ├── train
+        │   ├── images
+        │   │   └── img1.png, img2.png, ...
+        │   └── labels
+        │       └── img1.json, img2.json, ... (JSON files)
+        ├── test
+        │   ├── images
+        │   │   └── img1.png, img2.png, ...
+        │   └── labels
+        │       └── img1.json, img2.json, ...
+        └── validation
+            ├── images
+            │   └── img1.png, img2.png, ...
+            └── labels
+                └── img1.json, img2.json, ...
+
+        After:
+        datasets/plastic_in_river
+        ├── images
+        │   ├── train
+        │   │   └── img1.png, img2.png, ...
+        │   ├── test
+        │   │   └── img1.png, img2.png, ...
+        │   └── validation
+        │       └── img1.png, img2.png, ...
+        ├── labels
+        │   ├── train
+        │   │   └── img1.txt, img2.txt, ... (YOLO format)
+        │   ├── test
+        │   │   └── img1.txt, img2.txt, ...
+        │   └── validation
+        │       └── img1.txt, img2.txt, ...
+        └── dataset.yaml (=DATASET_YOLO_CONFIG_NAME)
         """
 
         try:
@@ -251,7 +288,7 @@ class Dataset:
         threads = []
         for root, _, files in os.walk(dataset_path):
             for file in files:
-                if file.endswith(".json"):
+                if file.endswith(".json") and file!="label_map.json":
                     json_path = os.path.join(root, file)
                     img_path = json_path.replace("labels", "images").replace(
                         ".json", ".png"
