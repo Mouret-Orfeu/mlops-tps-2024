@@ -4,6 +4,7 @@ from pathlib import Path
 from src.config import settings
 import os
 import requests
+import torch
 
 
 # Fonction pour télécharger un fichier en utilisant requests
@@ -49,8 +50,13 @@ def train_model(pipeline_config: dict, data_config_path: str):
     if not os.path.exists(data_config_path):
         raise FileNotFoundError(f"Data config file not found: {data_config_path}")
     
+    print(torch.cuda.is_available())
+
+    print(torch.cuda.device_count())
+    
     trained_model = model.train(data=data_config_path, epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
 
+    print("entrainement terminé")
     trained_model_path = "ultralytics/yolov8s_trained.pt"
 
     # Sauvegarder le modèle entraîné
