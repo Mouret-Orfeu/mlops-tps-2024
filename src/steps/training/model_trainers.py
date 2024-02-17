@@ -7,10 +7,10 @@ from train import train_model
 
 
 @step
-def model_trainer(dataset_path: str):
+def model_trainer(pipeline_config: dict, dataset_path: str):
     data_config_path = os.path.join(dataset_path, settings.DATASET_YOLO_CONFIG_NAME)
 
-    trained_model_path = train_model(data_config_path)
+    trained_model_path = train_model(pipeline_config, data_config_path)
     return trained_model_path
 
 def model_predict(model_path: str, image_paths: list[str]):

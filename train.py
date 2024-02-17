@@ -1,4 +1,3 @@
-import hydra
 from omegaconf import DictConfig, OmegaConf
 from ultralytics import YOLO
 from pathlib import Path
@@ -24,8 +23,7 @@ def download_pre_trained_model(url, destination_folder, file_name):
     
     return file_path
 
-@hydra.main(config_path="src/config/", config_name="config", version_base="1.2")
-def train_model(cfg: DictConfig, data_config_path):
+def train_model(pipeline_config: dict, data_config_path: str):
 
     model_url = settings.YOLO_PRE_TRAINED_WEIGHTS_URL
     model_folder = settings.YOLO_PRE_TRAINED_WEIGHTS_PATH
@@ -35,10 +33,10 @@ def train_model(cfg: DictConfig, data_config_path):
     pre_trained_model_path = download_pre_trained_model(model_url, model_folder, model_name)
 
     # Récupérer les paramètres du fichier de configuration
-    nb_epochs = cfg.nb_epochs
-    img_size = cfg.img_size
-    batch_size = cfg.batch_size
-    device = cfg.device
+    nb_epochs = pipeline_config["model"]["nb_epochs"]
+    img_size = pipeline_config["model"]["img_size"]
+    batch_size = pipeline_config["model"]["batch_size"]
+    device = pipeline_config["model"]["device"]
     
     # Load a pretrained YOLO model (recommended for training)
     model = YOLO(pre_trained_model_path) # Mettre le vrai chemin ici
@@ -51,7 +49,7 @@ def train_model(cfg: DictConfig, data_config_path):
     if not os.path.exists(data_config_path):
         raise FileNotFoundError(f"Data config file not found: {data_config_path}")
     
-    trained_model = model.train(data=data_config_path, epochs=nb_epochs, imgsz=img_size, batch_size=batch_size, device=device)
+    trained_model = model.train(data=data_config_path, epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
 
     trained_model_path = "ultralytics/yolov8s_trained.pt"
 

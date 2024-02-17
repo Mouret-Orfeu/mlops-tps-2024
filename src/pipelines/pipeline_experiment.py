@@ -55,13 +55,16 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
     dataset_to_yolo_converter(dataset, extraction_path)
 
     # Train the model
-    trained_model_path = model_trainer(extraction_path)
+    trained_model_path = model_trainer(
+        pipeline_config,
+        extraction_path
+    )
 
-    print("\033[91m" + trained_model_path + "\033[0m")
-    # DEBUG
-    test_path(trained_model_path)
-    # DEBUG et visualisation (temporaire, à supprimer plus tard)
-    model_predict(trained_model_path, ["datasets/plastic_in_river/images/train/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
+    # # print("\033[91m" + trained_model_path + "\033[0m")
+    # # DEBUG
+    # test_path(trained_model_path)
+    # # DEBUG et visualisation (temporaire, à supprimer plus tard)
+    # model_predict(trained_model_path, ["datasets/plastic_in_river/images/train/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
 
     # Evaluate the model
     # test_metrics_result = model_evaluator(

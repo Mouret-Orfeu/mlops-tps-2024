@@ -2,7 +2,6 @@ project:
   name: river-clean
 
 model:
-  key: value
   img_size: 640
   batch_size: 16
   nb_epochs: 10
