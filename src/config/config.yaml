@@ -3,7 +3,7 @@ project:
 
 model:
   img_size: 640
-  batch_size: 9
+  batch_size: 8
   nb_epochs: 1
   device: 1
 

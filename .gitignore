@@ -181,3 +181,4 @@ outputs/
 setup.txt
 test.py
 viz.py
+experiments/

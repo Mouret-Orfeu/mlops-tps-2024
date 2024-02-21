@@ -32,6 +32,25 @@ def download_pre_trained_model(url: str, destination_folder: str, file_name: str
     
     return file_path
 
+
+def get_last_experiment_folder_name(parent_folder: str) -> str:
+    """
+    Retrieve the name of the last experiment folder within a given parent folder.
+
+    Args:
+        parent_folder (str): The path to the parent folder.
+
+    Returns:
+        str: The name of the last experiment folder within the parent folder.
+    """
+    dirs = [
+        d
+        for d in os.listdir(parent_folder)
+        if os.path.isdir(os.path.join(parent_folder, d))
+    ]
+
+    return dirs[-1]
+
 @step
 def model_trainer(pipeline_config: dict, dataset_path: str):
     """
@@ -39,10 +58,14 @@ def model_trainer(pipeline_config: dict, dataset_path: str):
 
     Args:
         pipeline_config: dict containing the hyperparameters of the model
-        data_config_path: path of the dataset 
+        dataset_path: path of the dataset 
     Returns:
         path of the trained model
     """
+    
+    experiments_folder = "ultralytics/"
+
+
     model_url = settings.YOLO_PRE_TRAINED_WEIGHTS_URL
     model_folder = settings.YOLO_PRE_TRAINED_WEIGHTS_PATH
     model_name = settings.YOLO_PRE_TRAINED_WEIGHTS_NAME
@@ -74,12 +97,9 @@ def model_trainer(pipeline_config: dict, dataset_path: str):
     print(torch.cuda.is_available())
     print(torch.cuda.device_count())
     
-    model.train(data=data_config_path, epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
+    model.train(data=data_config_path, project=experiments_folder,epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
 
-    trained_model_path = "ultralytics/yolov8s_trained.pt"
-    model.save(trained_model_path)
-
-    return trained_model_path
+    return os.path.join(experiments_folder,get_last_experiment_folder_name(experiments_folder),"weights","best.pt")
 
 
 

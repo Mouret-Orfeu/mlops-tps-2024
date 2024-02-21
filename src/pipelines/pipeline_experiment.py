@@ -19,13 +19,10 @@ from src.steps.data.dataset_preparators import (
 )
 from src.steps.training.model_trainers import (
     model_trainer,
-    model_predict,
-
-    # DEBUG
-    test_path
+    model_predict
 )
 from src.steps.training.model_evaluators import model_evaluator # Créer model_evaluator.py et coder fonction
-from src.steps.training.model_appraisers import model_appraiser
+#from src.steps.training.model_appraisers import model_appraiser
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)
@@ -63,9 +60,7 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
     model_predict(trained_model_path, ["datasets/plastic_in_river/images/test/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
 
     # Evaluate the model
-    # test_metrics_result = model_evaluator(
-    #     ...
-    # )
+    test_metrics_result = model_evaluator(trained_model_path,pipeline_config,extraction_path)
 
     # Retrieve a decision if the model should be deployed
     # can_model_be_deployed = model_appraiser(
