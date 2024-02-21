@@ -38,7 +38,7 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
     minio_client: MinioClient = minio_client_initializer()
     data_source_list = data_source_list_initializer()
 
-    bucket_name = "data-sources"
+    bucket_name="data-sources"
 
     distribution_weights = [0.6, 0.2, 0.2]
 
