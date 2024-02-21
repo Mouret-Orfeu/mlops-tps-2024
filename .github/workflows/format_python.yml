@@ -21,3 +21,5 @@ jobs:
           VALIDATE_PYTHON_BLACK: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+          BLACK_DIFF_ONLY: true
+
