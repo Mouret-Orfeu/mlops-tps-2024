@@ -3,10 +3,10 @@ name: Lint Code Base
 on:
   push:
     branches:
-      - main
+      - feat/black_git_action
   pull_request:
     branches:
-      - main
+      - feat/black_git_action
 
 jobs:
   build:
