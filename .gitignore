@@ -179,3 +179,5 @@ outputs/
 
 # Other
 setup.txt
+test.py
+viz.py

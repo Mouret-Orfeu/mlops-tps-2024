@@ -60,11 +60,7 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
         extraction_path
     )
 
-    # # print("\033[91m" + trained_model_path + "\033[0m")
-    # # DEBUG
-    # test_path(trained_model_path)
-    # # DEBUG et visualisation (temporaire, à supprimer plus tard)
-    # model_predict(trained_model_path, ["datasets/plastic_in_river/images/train/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
+    model_predict(trained_model_path, ["datasets/plastic_in_river/images/test/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
 
     # Evaluate the model
     # test_metrics_result = model_evaluator(
