@@ -181,4 +181,5 @@ outputs/
 setup.txt
 test.py
 viz.py
+plot_bounding_box.py
 experiments/
