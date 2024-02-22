@@ -11,4 +11,4 @@ evaluation:
   threshold: 0.5
 
 pipeline:
-  name: experiment
+  name: end-to-end
