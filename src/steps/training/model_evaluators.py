@@ -16,8 +16,12 @@ def model_evaluator(model_path: str, pipeline_config: dict, dataset_path: str):
         model_path: path of the YOLOV8 model in PyTorch format
         pipeline_config: dict containing the hyperparameters of the model
         dataset_path: path of the dataset 
+
     Returns:
         mAP0.5-0.95 metric of each label
+    
+    Raises:
+        ValueError: If model.val fails
     """
     # Load the model
     model = YOLO(model_path)
@@ -36,6 +40,9 @@ def model_evaluator(model_path: str, pipeline_config: dict, dataset_path: str):
 
 
     metrics = model.val(data=data_config_path, split="test",imgsz = img_size,batch=batch_size,device=device) 
+    if metrics is None:
+        raise ValueError("The model has not been evaluated correctly")
+
 
 
     metrics.confusion_matrix.plot(normalize=True,save_dir='result')   
