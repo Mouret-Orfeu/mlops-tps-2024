@@ -10,7 +10,16 @@ services:
       - minio_data:/data
     env_file:
       - src/config/.env
-    entrypoint: [ "minio", "server", "--address", "0.0.0.0:9000", "--console-address", "0.0.0.0:9001", "/data" ]
+    entrypoint:
+      [
+        "minio",
+        "server",
+        "--address",
+        "0.0.0.0:9000",
+        "--console-address",
+        "0.0.0.0:9001",
+        "/data"
+      ]
     networks:
       - mlops_e2e
 
@@ -50,15 +59,13 @@ services:
       - minio
     ports:
       - "5001:5000"
-    command: "mlflow server --app-name basic-auth --serve-artifacts"
+    command: "mlflow server --serve-artifacts"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-
-
 volumes:
-  minio_data: { }
-  mysql_data: { }
+  minio_data: {}
+  mysql_data: {}
 
 networks:
   mlops_e2e:

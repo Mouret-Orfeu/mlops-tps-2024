@@ -1,3 +1,4 @@
+import mlflow
 import os
 from src.config import settings
 import json
@@ -6,8 +7,11 @@ from typing import List, Dict, Tuple
 from ultralytics import YOLO
 from zenml import step
 import torch
+from src.utils.tracker_helper import get_tracker_name
 
-@step
+@step(
+    experiment_tracker=get_tracker_name(),
+)
 def model_evaluator(model_path: str, pipeline_config: dict, dataset_path: str):
     """
     Evaluate a YOLOV8 model on test split from dataset
@@ -35,18 +39,11 @@ def model_evaluator(model_path: str, pipeline_config: dict, dataset_path: str):
     batch_size = pipeline_config["model"]["batch_size"]
     device = pipeline_config["model"]["device"]
   
-    print(torch.cuda.is_available())
-    print(torch.cuda.device_count())
-
+    print(f"CUDA is available: {torch.cuda.is_available()}")
+    print(f"Number of CUDA devices: {torch.cuda.device_count()}")
 
     metrics = model.val(data=data_config_path, split="test",imgsz = img_size,batch=batch_size,device=device) 
     if metrics is None:
         raise ValueError("The model has not been evaluated correctly")
 
-
-
-    metrics.confusion_matrix.plot(normalize=True,save_dir='result')   
-
     return metrics.box.maps
-
-
