@@ -1,3 +1,4 @@
+import mlflow
 import os
 from src.config import settings
 from ultralytics import YOLO
@@ -5,6 +6,7 @@ from pathlib import Path
 from zenml import step
 import torch
 import requests
+from src.utils.tracker_helper import get_tracker_name
 
 def download_pre_trained_model(url: str, destination_folder: str, file_name: str):
     """
@@ -17,11 +19,11 @@ def download_pre_trained_model(url: str, destination_folder: str, file_name: str
     Returns:
         path of the downloaded file
     """
-    # Créer le dossier de destination s'il n'existe pas
+    # Create the destination folder if it does not exist
     os.makedirs(destination_folder, exist_ok=True)
     file_path = os.path.join(destination_folder, file_name)
 
-    # Télécharger le fichier et l'écrire dans le dossier de destination
+    # Dowload the file and write it in the destination folder
     response = requests.get(url)
     if response.status_code == 200:
         with open(file_path, 'wb') as file:
@@ -51,7 +53,9 @@ def get_last_experiment_folder_name(parent_folder: str) -> str:
 
     return dirs[-1]
 
-@step
+@step(
+    experiment_tracker=get_tracker_name(),
+)
 def model_trainer(pipeline_config: dict, dataset_path: str):
     """
     Train a YOLOV8 model
@@ -62,9 +66,9 @@ def model_trainer(pipeline_config: dict, dataset_path: str):
     Returns:
         path of the trained model
     """
+  
     
     experiments_folder = "ultralytics/"
-
 
     model_url = settings.YOLO_PRE_TRAINED_WEIGHTS_URL
     model_folder = settings.YOLO_PRE_TRAINED_WEIGHTS_PATH
@@ -96,8 +100,8 @@ def model_trainer(pipeline_config: dict, dataset_path: str):
     #print necessary to active cuda
     print(torch.cuda.is_available())
     print(torch.cuda.device_count())
-    
-    model.train(data=data_config_path, project=experiments_folder,epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
+
+    model.train(data=data_config_path, project=experiments_folder, epochs=nb_epochs, imgsz=img_size, batch=batch_size, device=device)
 
     return os.path.join(experiments_folder,get_last_experiment_folder_name(experiments_folder),"weights","best.pt")
 

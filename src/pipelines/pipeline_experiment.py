@@ -1,3 +1,4 @@
+import mlflow
 from omegaconf import OmegaConf
 from zenml import pipeline
 from src.config import settings
@@ -22,7 +23,7 @@ from src.steps.training.model_trainers import (
     model_predict
 )
 from src.steps.training.model_evaluators import model_evaluator # Créer model_evaluator.py et coder fonction
-#from src.steps.training.model_appraisers import model_appraiser
+from src.steps.training.model_appraisers import model_appraiser
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)
@@ -37,11 +38,10 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     minio_client: MinioClient = minio_client_initializer()
     data_source_list = data_source_list_initializer()
-
     bucket_name = "data-sources"
 
     distribution_weights = [0.6, 0.2, 0.2]
-
+    
     # Prepare/create the dataset
     dataset = dataset_creator(data_source_list, 1234, bucket_name, distribution_weights)
 
@@ -57,19 +57,16 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
         extraction_path
     )
 
-    model_predict(trained_model_path, ["datasets/plastic_in_river/images/test/0a6acc8c147b25fd58f9c2b6a9e1c1e7af48d94738ec8421180cd264d71273a3.png"])
-
     # Evaluate the model
-    test_metrics_result = model_evaluator(trained_model_path,pipeline_config,extraction_path)
+    model_metrics = model_evaluator(trained_model_path,pipeline_config,extraction_path)
 
     # Retrieve a decision if the model should be deployed
-    # can_model_be_deployed = model_appraiser(
-    #     ...
-    # )
+    can_model_be_deployed = model_appraiser(
+        model_metrics, pipeline_config
+    )
 
-    # if can_model_be_deployed:
-    #     model_registerer(...)
-    #     model_deployer(...)
-    #
-    # else:
-    #     print(...)
+    if can_model_be_deployed:
+        print("Model can be deployed")
+    
+    else:
+        print("Model cannot be deployed")
